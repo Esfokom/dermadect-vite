@@ -1,0 +1,144 @@
+:root {
+  --primary-color: #4a90e2;
+  --secondary-color: #6fcf97;
+  --danger-color: #eb5757;
+  --warning-color: #f2c94c;
+  --text-color: #333;
+  --light-text: #666;
+  --background-color: #f9f9f9;
+  --card-background: #fff;
+  --border-color: #e0e0e0;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+  
+  h1 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+  }
+  
+  p {
+    color: var(--light-text);
+    font-size: 1.1rem;
+  }
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.results-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 2rem;
+  
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.image-preview-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  .image-preview {
+    max-width: 100%;
+    max-height: 400px;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    margin-bottom: 1rem;
+  }
+  
+  .reset-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition);
+    
+    &:hover {
+      background-color: darken(#4a90e2, 10%);
+    }
+  }
+}
+
+.analysis-container {
+  flex: 2;
+  background-color: var(--card-background);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  min-height: 400px;
+}
+
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  
+  p {
+    margin-top: 1rem;
+    color: var(--light-text);
+    font-size: 1.1rem;
+  }
+}
+
+.error-message {
+  background-color: rgba(235, 87, 87, 0.1);
+  border-left: 4px solid var(--danger-color);
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 4px;
+  
+  p {
+    color: var(--danger-color);
+  }
+}
+
+footer {
+  margin-top: 3rem;
+  text-align: center;
+  color: var(--light-text);
+  font-size: 0.9rem;
+}
