@@ -1,0 +1,26 @@
+{
+  "canisters": {
+    "dermadect-vite-backend": {
+      "main": "src/dermadect-vite-backend/main.mo",
+      "type": "motoko"
+    },
+    "dermadect-vite-frontend": {
+      "dependencies": [
+        "dermadect-vite-backend"
+      ],
+      "source": [
+        "src/dermadect-vite-frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "dermadect-vite-frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
