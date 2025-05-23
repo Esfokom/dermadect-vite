@@ -49,45 +49,64 @@ function App() {
             // Parse the response if it's a string
             const parsedResponse = typeof response === "string" ? JSON.parse(response) : response
 
+            // Set prediction results immediately and turn off prediction loading
             setPrediction(parsedResponse)
+            setLoading(prevLoading => ({ ...prevLoading, prediction: false }))
 
             // Check if it's Unknown/Normal or a known disease
             const predictedClass = parsedResponse.prediction.predicted_class
 
             if (predictedClass !== "Unknown/Normal") {
               // If it's a known disease, call the gemini function
-              setLoading({ ...loading, prediction: false, gemini: true })
+              // Note: we're setting ONLY gemini loading to true now
+              setLoading(prevLoading => ({ ...prevLoading, gemini: true }))
 
               dermadect_vite_backend
                 .geminiRequest(predictedClass)
                 .then((geminiRes) => {
-                  setGeminiResponse(geminiRes)
-                  setLoading({ ...loading, gemini: false })
+                  console.log("Raw gemini response from backend:", geminiRes);
+
+                  // If the response is a string that looks like it might be JSON
+                  if (typeof geminiRes === 'string' && (geminiRes.startsWith('{') || geminiRes.startsWith('['))) {
+                    try {
+                      // Try to parse it
+                      const parsedResponse = JSON.parse(geminiRes);
+                      setGeminiResponse(parsedResponse);
+                    } catch (e) {
+                      // If parsing fails, use the raw string
+                      console.warn("Failed to parse gemini response as JSON, using raw string", e);
+                      setGeminiResponse(geminiRes);
+                    }
+                  } else {
+                    // If it's not a JSON string, use as is
+                    setGeminiResponse(geminiRes);
+                  }
+
+                  // Only turn off gemini loading
+                  setLoading(prevLoading => ({ ...prevLoading, gemini: false }));
                 })
                 .catch((err) => {
                   console.error("Gemini request error:", err)
                   setError("Failed to get detailed information about the condition.")
-                  setLoading({ ...loading, gemini: false })
+                  setLoading(prevLoading => ({ ...prevLoading, gemini: false }))
                 })
-            } else {
-              setLoading({ ...loading, prediction: false })
             }
           } catch (err) {
             console.error("Error parsing prediction:", err)
             setError("Failed to process the prediction result.")
-            setLoading({ ...loading, prediction: false })
+            setLoading(prevLoading => ({ ...prevLoading, prediction: false }))
           }
         })
         .catch((err) => {
           console.error("Prediction error:", err)
           setError("Failed to analyze the image. Please try again.")
-          setLoading({ ...loading, prediction: false })
+          setLoading(prevLoading => ({ ...prevLoading, prediction: false }))
         })
     }
 
     reader.onerror = () => {
       setError("Failed to read the image file. Please try again.")
-      setLoading({ ...loading, upload: false })
+      setLoading(prevLoading => ({ ...prevLoading, upload: false }))
     }
 
     reader.readAsDataURL(file)
@@ -128,7 +147,14 @@ function App() {
             </div>
 
             <div className="analysis-container">
-              {(loading.prediction || loading.upload) && (
+              {loading.upload && (
+                <div className="loader-container">
+                  <Loader />
+                  <p>Processing your image...</p>
+                </div>
+              )}
+
+              {loading.prediction && (
                 <div className="loader-container">
                   <Loader />
                   <p>Analyzing your image...</p>
@@ -141,10 +167,12 @@ function App() {
                 </div>
               )}
 
-              {prediction && !loading.prediction && !loading.gemini && <ResultDisplay prediction={prediction} />}
+              {/* Show prediction results as soon as they're available */}
+              {prediction && !loading.prediction && <ResultDisplay prediction={prediction} />}
 
+              {/* Separately show Gemini loading and results */}
               {loading.gemini && (
-                <div className="loader-container">
+                <div className="loader-container gemini-loader">
                   <Loader />
                   <p>Getting detailed information...</p>
                 </div>
@@ -157,7 +185,7 @@ function App() {
       </main>
 
       <footer>
-        <p>© 2024 DermaDect - AI-powered skin condition analysis</p>
+        <p>© 2025 DermaDect - AI-powered skin condition analysis</p>
       </footer>
     </div>
   )
