@@ -30,15 +30,12 @@ function App() {
     setPrediction(null)
     setGeminiResponse(null)
 
-    // Create a preview URL
-    const previewUrl = URL.createObjectURL(file)
-    setImagePreview(previewUrl)
-
     // Convert to base64
     const reader = new FileReader()
     reader.onload = (e) => {
       const base64String = e.target.result
       setImage(base64String)
+      setImagePreview(base64String) // Use base64 string directly for preview
       setLoading({ ...loading, upload: false, prediction: true })
 
       // Call the prediction function
